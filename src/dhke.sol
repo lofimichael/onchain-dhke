@@ -96,9 +96,10 @@ contract Exchanger is IDHKE {
         require(bytes(publicKeys[_sender]).length > 0, "Sender must have a registered public key.");
         require(bytes(publicKeys[_recipient]).length > 0, "Recipient must have a registered public key.");
 
-        nonces[_sender][_recipient]++;
         DataPayload memory payload = DataPayload(_encryptedDecryptionKey,_encryptedData);
         DataPayloads[_sender][_recipient][nonces[_sender][_recipient]] = payload;
+        nonces[_sender][_recipient]++;
+
 
         emit encryptedPayloadRegistered(_encryptedDecryptionKey, _sender, _recipient, _encryptedData, nonces[_sender][_recipient]);
         return true;
@@ -137,7 +138,9 @@ contract Exchanger is IDHKE {
     }
 
     function getEncryptedPayload(address _sender, address _recipient, uint256 _nonce) external view returns (DataPayload memory) {
-        DataPayload memory payload = DataPayloads[_sender][_recipient][nonces[_sender][_recipient]];
+        // require the nonce to be valid
+        require(_nonce < nonces[_sender][_recipient], "Nonce must be less than the current nonce for the sender/recipient pair. All other data is null.");
+        DataPayload memory payload = DataPayloads[_sender][_recipient][_nonce];
         return payload;
     }
 
