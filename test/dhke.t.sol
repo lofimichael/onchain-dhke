@@ -48,7 +48,12 @@ contract DHKE_Test is Test {
         console2.log("requiring msg.sender == ", DHKE.owner());
         vm.startPrank(dummy);
         console2.log("pranking as dummy:", dummy);
-        DHKE.updateConstants(2, "FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1 29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD EF9519B3 CD3A431B", "cryptographysource.com");
+        DHKE.updateConstants
+        (
+        2, 
+        "FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1 29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD EF9519B3 CD3A431B", 
+        "cryptographysource.com"
+        );
         vm.stopPrank();
     }
 
@@ -108,20 +113,21 @@ contract DHKE_Test is Test {
         DHKE.setPublicKey("dummier's public key");
 
         vm.startPrank(dummy);
-        console2.log(DHKE.getNonce(dummy, dummier));
-        console2.log(DHKE.getInverseNonce(dummy, dummier));
 
         DHKE.registerEncryptedPayload(
-            "arbitraryB64Key", dummy, dummier, "encryptedData"
+            "key1", dummy, dummier, "data1"
         );
 
-                DHKE.registerEncryptedPayload(
-            "arbitraryB64Key", dummy, dummier, "encryptedData"
+        DHKE.registerEncryptedPayload(
+            "key2", dummy, dummier, "data2"
         );
 
-        console2.log(DHKE.getNonce(dummy, dummier));
-        console2.log(DHKE.getInverseNonce(dummy, dummier));
-        
+        vm.stopPrank();
+
+        // get the payload for the first nonce and assert it's data is equal to the data we sent;
+        console2.log(DHKE.getEncryptedPayload(dummy, dummier, 0).encryptedData);
+        assertEq(DHKE.getEncryptedPayload(dummy, dummier, 0).encryptedData, "data1");
+
     }
     
     function test_getPayload() public {
@@ -141,27 +147,43 @@ contract DHKE_Test is Test {
             "key2", dummy, dummier, "data2"
         );
 
-        DHKE.getEncryptedPayload(dummy, dummier, 1);
-        DHKE.getEncryptedPayload(dummy, dummier, 2);
+        vm.prank(dummier);
+        DHKE.registerEncryptedPayload("key3", dummier, dummy, "data3");
 
+        DHKE.getEncryptedPayload(dummy, dummier, 0);
+        DHKE.getEncryptedPayload(dummy, dummier, 1);
+        DHKE.getEncryptedPayload(dummier, dummy, 0);
+        console2.log(DHKE.getEncryptedPayload(dummy, dummier, 0).encryptedData);
+        console2.log(DHKE.getEncryptedPayload(dummy, dummier, 1).encryptedData);
+        console2.log(DHKE.getEncryptedPayload(dummier, dummy, 0).encryptedData);
+        assertEq(DHKE.getEncryptedPayload(dummy, dummier, 0).encryptedDecryptionKey, "key1");
+        assertEq(DHKE.getEncryptedPayload(dummy, dummier, 0).encryptedData, "data1");
+        assertEq(DHKE.getEncryptedPayload(dummy, dummier, 1).encryptedDecryptionKey, "key2");
+        assertEq(DHKE.getEncryptedPayload(dummy, dummier, 1).encryptedData, "data2");
+        assertEq(DHKE.getEncryptedPayload(dummier, dummy, 0).encryptedDecryptionKey, "key3");
+        assertEq(DHKE.getEncryptedPayload(dummier, dummy, 0).encryptedData, "data3");
     }
         
 
-    //     function testFail_getPayload() public {
-    //     // register public keys for each user
-    //     vm.prank(dummy);
-    //     DHKE.setPublicKey("dummy's public key");
-    //     vm.prank(dummier);
-    //     DHKE.setPublicKey("dummier's public key");       
+        function testFail_getNullPayload() public {
+        // register public keys for each user
+        vm.prank(dummy);
+        DHKE.setPublicKey("dummy's public key");
+        vm.prank(dummier);
+        DHKE.setPublicKey("dummier's public key");       
         
-    //     vm.prank(dummy);
-    //     DHKE.registerEncryptedPayload(
-    //         "arbitraryB64Key", dummy, dummier, "encryptedData"
-    //     );
+        vm.prank(dummy);
+        DHKE.registerEncryptedPayload(
+            "key1", dummy, dummier, "data1"
+        );
 
-    //     // attempt to get the data of a nonce not yet reached
-    //     DHKE.getEncryptedPayload(dummy, dummier, 9001);
-    // }
+        // attempt to get the data of a sender/receiver pair within normal nonce ranges
+        DHKE.getEncryptedPayload(dummy, dummier, 0);
+
+        // attempt to get the data of a nonce not yet reached
+        DHKE.getEncryptedPayload(dummy, dummier, 9001);
+
+    }
 
 
 }
