@@ -30,7 +30,7 @@
  |____/  \__|  |______|  |______|    |__| |_|  |______|  |__|\__\  |______| 
                                                            (っ^з^)♪♬         
                      	( •_•)O*¯`·.¸.·´¯`°Q(•_• )                          
-@title Diffie Hellman Key Exchange (DHKE) Interface (Public Decentralized Data Exchange)
+@title Diffie Hellman Key Exchange (DHKE) Interface (Public Decentralized Data Exchange) 1.0
 @author: @lofimichael
 */
 
