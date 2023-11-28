@@ -51,8 +51,8 @@ This is a proof-of-concept implementation of Diffie-Hellman Key Exchange over bl
 
 [Kyber](https://github.com/fisherstevenk/crystals-kyber-ts), a quantum-resistant cryptography scheme, is a potential future candidate for use to ensure that transmitted files/symlinks are not decrypted, even if the underlying blockchain is compromised.
 
-In the future, symlinks to encrypted payloads can be sent instead of full files, and the data can be stored off-chain in a distributed file system (IPFS, etc.) for more efficient storage and communication.
- 
+In the future, symlinks to encrypted payloads can be sent instead of full files, and the data can be stored off-chain in a distributed file system (IPFS, etc.) for more efficient storage and communication. This way, egress of data can be measured in regulated environments. User agents defined here are done to simulate behaviour, and in real-world applications can be any arbitrary user agent (mobile, web, etc.).
+
 ### License
 MIT
 
