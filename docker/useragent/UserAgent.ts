@@ -2,7 +2,7 @@ import { GetContractReturnType, PrivateKeyAccount, createWalletClient, defineCha
 import { privateKeyToAccount } from "viem/accounts";
 import { keccak256, toHex } from 'viem'
 import ethers from 'ethers';
-import { exchangerABI } from "../dhkeabi";
+import { exchangerABI } from "../_generated_dhkeabi";
 import fs from 'fs';
 
 import { pad } from 'viem'
