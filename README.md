@@ -45,6 +45,8 @@ cd docker && ./docker.sh
 
 Call locally-running Docker container endpoints as defined in `app.ts`.
 
+![demo](https://storage.googleapis.com/lofilabs1/dhke.gif)
+
 ### Considerations
 
 This is a proof-of-concept implementation of Diffie-Hellman Key Exchange over blockchain using Docker containers for full isolation. It is not *currently* intended for production use, as full files are sent and stored on-chain. Files themselves are encrypted using AES-256-CBC.
