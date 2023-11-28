@@ -45,7 +45,7 @@ cd docker && ./docker.sh
 
 Call locally-running Docker container endpoints as defined in `app.ts`.
 
-![demo](https://storage.googleapis.com/lofilabs1/dhke.gif)
+![demo](/dhke.gif)
 
 ### Considerations
 
