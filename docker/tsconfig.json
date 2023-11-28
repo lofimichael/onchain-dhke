@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "outDir": "./dist",
+      "resolveJsonModule": true,
+    },
+    "include": ["app.ts"],
+    "exclude": ["node_modules"]
+  }

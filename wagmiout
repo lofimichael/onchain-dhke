@@ -1,0 +1,518 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exchanger
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const exchangerABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: '_generator', internalType: 'uint256', type: 'uint256' },
+      { name: '_primehex', internalType: 'string', type: 'string' },
+    ],
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'generator',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'primehex',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'source',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
+      {
+        name: 'version',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'constantsUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'encryptedDecryptionKey',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'encryptedData',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'nonce',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'encryptedPayloadRegistered',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'oldOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'ownerUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'publicKey',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'publicKeyRegistered',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'DataPayloads',
+    outputs: [
+      {
+        name: 'encryptedDecryptionKey',
+        internalType: 'string',
+        type: 'string',
+      },
+      { name: 'encryptedData', internalType: 'string', type: 'string' },
+    ],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_newOwner', internalType: 'address', type: 'address' }],
+    name: 'changeOwner',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getConstants',
+    outputs: [
+      {
+        name: '',
+        internalType: 'struct IDHKE.PublicConstants',
+        type: 'tuple',
+        components: [
+          { name: 'generator', internalType: 'uint256', type: 'uint256' },
+          { name: 'primehex', internalType: 'string', type: 'string' },
+          { name: 'source', internalType: 'string', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+      { name: '_nonce', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getEncryptedPayload',
+    outputs: [
+      {
+        name: '',
+        internalType: 'struct IDHKE.DataPayload',
+        type: 'tuple',
+        components: [
+          {
+            name: 'encryptedDecryptionKey',
+            internalType: 'string',
+            type: 'string',
+          },
+          { name: 'encryptedData', internalType: 'string', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+    ],
+    name: 'getInverseNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+    ],
+    name: 'getNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getOwner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: '_user', internalType: 'address', type: 'address' }],
+    name: 'getPublicKey',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+    ],
+    name: 'nonces',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'owner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'publicKeys',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      {
+        name: '_encryptedDecryptionKey',
+        internalType: 'string',
+        type: 'string',
+      },
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+      { name: '_encryptedData', internalType: 'string', type: 'string' },
+    ],
+    name: 'registerEncryptedPayload',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_publicKey', internalType: 'string', type: 'string' }],
+    name: 'setPublicKey',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_generator', internalType: 'uint256', type: 'uint256' },
+      { name: '_primehex', internalType: 'string', type: 'string' },
+      { name: '_source', internalType: 'string', type: 'string' },
+    ],
+    name: 'updateConstants',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'version',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IDHKE
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const idhkeABI = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'generator',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'primehex',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'source',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
+      {
+        name: 'version',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'constantsUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'encryptedDecryptionKey',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'encryptedData',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'nonce',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'encryptedPayloadRegistered',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'oldOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'ownerUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'publicKey',
+        internalType: 'string',
+        type: 'string',
+        indexed: true,
+      },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'publicKeyRegistered',
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_newOwner', internalType: 'address', type: 'address' }],
+    name: 'changeOwner',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getConstants',
+    outputs: [
+      {
+        name: '',
+        internalType: 'struct IDHKE.PublicConstants',
+        type: 'tuple',
+        components: [
+          { name: 'generator', internalType: 'uint256', type: 'uint256' },
+          { name: 'primehex', internalType: 'string', type: 'string' },
+          { name: 'source', internalType: 'string', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+      { name: '_nonce', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getEncryptedPayload',
+    outputs: [
+      {
+        name: '',
+        internalType: 'struct IDHKE.DataPayload',
+        type: 'tuple',
+        components: [
+          {
+            name: 'encryptedDecryptionKey',
+            internalType: 'string',
+            type: 'string',
+          },
+          { name: 'encryptedData', internalType: 'string', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+    ],
+    name: 'getInverseNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+    ],
+    name: 'getNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getOwner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: '_user', internalType: 'address', type: 'address' }],
+    name: 'getPublicKey',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      {
+        name: '_encryptedDecryptionKey',
+        internalType: 'string',
+        type: 'string',
+      },
+      { name: '_sender', internalType: 'address', type: 'address' },
+      { name: '_recipient', internalType: 'address', type: 'address' },
+      { name: '_encryptedData', internalType: 'string', type: 'string' },
+    ],
+    name: 'registerEncryptedPayload',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_publicKey', internalType: 'string', type: 'string' }],
+    name: 'setPublicKey',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_generator', internalType: 'uint256', type: 'uint256' },
+      { name: '_primehex', internalType: 'string', type: 'string' },
+      { name: '_source', internalType: 'string', type: 'string' },
+    ],
+    name: 'updateConstants',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+] as const

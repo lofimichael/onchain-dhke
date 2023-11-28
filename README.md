@@ -1,42 +1,58 @@
-# <h1 align="center"> Hardhat x Foundry Template </h1>
+# <h1 align="center"> On-Chain Diffie Hellman Key Exchange </h1>
 
-**Template repository for getting started quickly with Hardhat and Foundry in one project**
+### Overview
 
-![Github Actions](https://github.com/devanonon/hardhat-foundry-template/workflows/test/badge.svg)
+This is a repository containing an implementation of [Diffie-Hellman Key Exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) payload messenging over blockchain.
+
+Docker containers act as isolated user agents interacting with a Hardhat node running on the host device, sending and receiving data payloads. 
+
+Individual container endpoints exist for publishing and retrieving payloads (defined in `/docker/app.ts`).
+
+Payloads published on-chain by one container are received/listened-to by all other containers, but only the intended recipient of the container (designated by `PARTNER_ADDRESS` in `docker-compose.yml`) can decrypt the payload. 
+
+Files are uploaded via multiform data (using multer Express middleware), chunked to 1024 bytes (default), and sent in order to the recipient. The recipient then decrypts the payload and saves it to disk. Comments on this are elaborated-upon in `UserAgent.ts`. Payloads can be verified by observing the `uploads` directory of the sending container and the `received` directory of the receiving container, as well as the logs.
+
+### Installation of Dependencies
+
+* Make sure you have [NodeJS](https://nodejs.org/en/), [Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started#installation), [Foundry](https://book.getfoundry.sh/getting-started/installation), and [Docker](https://docs.docker.com/desktop/) installed. You should be able to run `npm`, `npx hardhat`, `forge`, and `docker` in your terminal.
+
+--------
 
 ### Getting Started
 
- * Use Foundry: 
 ```bash
-forge install
-forge test
-```
-
- * Use Hardhat:
-```bash
+# Install NPM dependencies
 npm install
-npx hardhat test
-```
 
-### Features
+# Build Solidty contracts in ./src
+forge build
 
- * Write / run tests with either Hardhat or Foundry:
-```bash
+# Optional: test Solidity contracts in ./test
 forge test
-# or
-npx hardhat test
+
+# Build Hardhat artifacts from Forge
+npx hardhat compile
+
+# Run Hardhat node in one terminal
+./hardhat.sh
+
+# Run Docker sevices in another terminal
+cd docker && ./docker.sh
 ```
+--------
 
- * Use Hardhat's task framework
-```bash
-npx hardhat example
-```
+### Usage
 
- * Install libraries with Foundry which work with Hardhat.
-```bash
-forge install rari-capital/solmate # Already in this repo, just an example
-```
+Call locally-running Docker container endpoints as defined in `app.ts`.
 
-### Notes
+### Considerations
 
-Whenever you install new libraries using Foundry, make sure to update your `remappings.txt` file by running `forge remappings > remappings.txt`. This is required because we use `hardhat-preprocessor` and the `remappings.txt` file to allow Hardhat to resolve libraries you install with Foundry.
+This is a proof-of-concept implementation of Diffie-Hellman Key Exchange over blockchain using Docker containers for full isolation. It is not *currently* intended for production use, as full files are sent and stored on-chain. Files themselves are encrypted using AES-256-CBC.
+
+[Kyber](https://github.com/fisherstevenk/crystals-kyber-ts), a quantum-resistant cryptography scheme, is a potential future candidate for use to ensure that transmitted files/symlinks are not decrypted, even if the underlying blockchain is compromised.
+
+In the future, symlinks to encrypted payloads can be sent instead of full files, and the data can be stored off-chain in a distributed file system (IPFS, etc.) for more efficient storage and communication.
+ 
+### License
+MIT
+

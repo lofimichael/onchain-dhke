@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  transceiver-1:
+    build: .
+    environment:
+      - PRIVATEKEY=${PRIVATEKEY_0}
+      - EXTERNAL_PORT=3001
+      - ROLE=TRANSCEIVER
+      - PARTNER_ADDRESS=${ADDRESS_1}
+      - PARTNER_PUBLICKEY=${PUBLICKEY_1}
+    ports:
+      - "3001:3000"
+    labels:
+      - "DHKE_ROLE: TRANSCEIVER"
+    volumes:
+      - ./pending_uploads:/app/uploads
+      - ./received:/app/received
+
+  transceiver-2:
+    build: .
+    environment:
+      - PRIVATEKEY=${PRIVATEKEY_1}
+      - EXTERNAL_PORT=3002
+      - ROLE=TRANSCEIVER
+      - PARTNER_ADDRESS=${ADDRESS_0}
+      - PARTNER_PUBLICKEY=${PUBLICKEY_0}
+    ports:
+      - "3002:3000"
+    labels:
+      - "DHKE_ROLE: TRANSCEIVER"
+    volumes:
+      - ./pending_uploads:/app/uploads
+      - ./received:/app/received
+
+
+  warden-1:
+    build: .
+    environment:
+      - PRIVATEKEY=${PRIVATEKEY_2}
+      - EXTERNAL_PORT=3003
+      - ROLE=WARDEN
+      - LISTENING_TO=[${ADDRESS_0},${ADDRESS_1}]
+    ports:
+      - "3003:3000"
+    labels:
+      - "DHKE_ROLE: WARDEN"
+    volumes:
+      - ./pending_uploads:/app/uploads
+      - ./received:/app/received

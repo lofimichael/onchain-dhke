@@ -1,49 +1,56 @@
-import fs from "fs";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "hardhat-preprocessor";
-import { HardhatUserConfig, task } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/types";
+import * as dotenv from 'dotenv';
+import "@nomicfoundation/hardhat-ethers";
+import fs from 'fs';
 
-import example from "./tasks/example";
+dotenv.config({ path: __dirname + '/docker/.env' });
 
-function getRemappings() {
-  return fs
-    .readFileSync("remappings.txt", "utf8")
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => line.trim().split("="));
-}
+// THIS ASSUMES THIS IS BEING RUN VIA `hardhat.sh` TO GENERATE KEYS AS A PRE-STEP
+const lines = fs.readFileSync('./docker/.env', 'utf8').split('\n');
+const privatekeys = lines
+  .filter(line => line.startsWith('PRIVATEKEY_'))
+  .map(key => key.split('=')[1]);
 
-task("example", "Example task").setAction(example);
+console.log("privatekeys")
+console.log(privatekeys);
 
+// Create account with balance
+const accounts = privatekeys.map(key => {
+  return {
+    privateKey: key.valueOf(),
+    balance: "100000000000000000000000000000000000"
+  }
+});
+
+console.log("accounts")
+console.log(accounts);
+
+// Use the mnemonics in your Hardhat configuration
 const config: HardhatUserConfig = {
-  solidity: {
-    version: "0.8.13",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200,
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {
+      accounts: accounts,
+      mining: {
+        auto: true,
+        interval: 1000
       },
     },
   },
-  paths: {
-    sources: "./src", // Use ./src rather than ./contracts as Hardhat expects
-    cache: "./cache_hardhat", // Use a different cache for Hardhat than Foundry
+  solidity: {
+    version: "0.8.19",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
   },
-  // This fully resolves paths for imports in the ./lib directory for Hardhat
-  preprocess: {
-    eachLine: (hre) => ({
-      transform: (line: string) => {
-        if (line.match(/^\s*import /i)) {
-          getRemappings().forEach(([find, replace]) => {
-            if (line.match(find)) {
-              line = line.replace(find, replace);
-            }
-          });
-        }
-        return line;
-      },
-    }),
+  paths: {
+    sources: "./src",
+    tests: "./test",
+    cache: "./cache_hardhat",
+    artifacts: "./artifacts"
   },
 };
 
