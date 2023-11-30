@@ -242,7 +242,7 @@ app.get('/get-payloads', async (req, res) => {
   }
 });
 
-// Ping hardhat node to check if it's online
+// Ping hardhat node default address to check if it's online
 function checkHardhatNode() {
   return new Promise((resolve) => {
     const request = http.get('http://host.docker.internal:8545', (response) => {
