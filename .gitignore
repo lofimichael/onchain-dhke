@@ -8,3 +8,9 @@ node_modules/
 #Hardhat files
 cache_hardhat/
 artifacts/
+
+docker/.env
+docker/_generated_dhkeabi.ts
+docker/address.txt
+docker/received
+docker/uploads
