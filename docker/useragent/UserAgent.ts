@@ -345,7 +345,6 @@ export class DHKEUserAgent {
         for (let i = 0; i < encryptedChunks.length; i++) {
             const chunk = encryptedChunks[i];
             const chunkIndex = i;  // Chunk index
-            const chunkHash = crypto.createHash('sha256').update(chunk.encryptedData).digest('hex');
 
             // coerce the encrypted chunks length and index to a bigint
             const encryptedChunksLength = BigInt(encryptedChunks.length)
