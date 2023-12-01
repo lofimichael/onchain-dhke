@@ -143,9 +143,7 @@ export class DHKEUserAgent {
 
     }    
 
-    // we cache here for the sake of the user agent so we dont overfetch the same public key from the contract and stress poor Viem
-    // this happens for the test case of sending **large** files in many multiple chunks on-chain from the test user agent
-    // todo: if the file is too large (>5mb) and has too many chunks, current cache function skips for some reason.
+    // we cache here for the sake of the user agent so we dont overfetch the same public key from the contract on each encryption/decryption operation and stress poor Viem
     async getPublicKey(address: `0x${string}`) {
         const addressLowercase = address.toLowerCase();
         const currentTime = Date.now();
@@ -304,8 +302,11 @@ export class DHKEUserAgent {
             }
         }
 
-   // Encrypt each chunk and collect promises
-   const encryptedChunkPromises = payloadChunks.map(chunk => 
+    // prefetch the recipient's public key and make sure its stored in the cache
+    await this.getPublicKey(process.env.PARTNER_ADDRESS as `0x${string}`)
+
+    // Encrypt each chunk and collect promises
+    const encryptedChunkPromises = payloadChunks.map(chunk=>  
     this.encryptData(chunk, process.env.PARTNER_ADDRESS as `0x${string}`)
     );
 
