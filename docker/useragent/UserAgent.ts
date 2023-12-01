@@ -339,6 +339,9 @@ export class DHKEUserAgent {
     ): Promise<any[]> {
         let txs: any[] = [];
     
+        // we send in series for now because viem lacks good nonce management
+        // https://github.com/wevm/viem/discussions/1338
+
         for (let i = 0; i < encryptedChunks.length; i++) {
             const chunk = encryptedChunks[i];
             const chunkIndex = i;  // Chunk index
